@@ -88,6 +88,19 @@ namespace VendingMachine
             //Then
             Assert.AreEqual(false, accept);
         }
+
+        [TestMethod]
+        public void AcceptPriceOfProduct_ShouldUpdatePriceDictionary()
+        {
+            //Given
+            var vendingMachine = new VendingMachine();
+            var intialColaPrice = vendingMachine.PriceDictionary[Choice.Cola];
+            var priceToUpdate = 5;
+            //When
+            vendingMachine.AcceptPriceOfProduct(Choice.Cola, priceToUpdate);
+            //Then
+            Assert.AreNotEqual(vendingMachine.PriceDictionary[Choice.Cola], intialColaPrice);
+        }
     }
 
     public enum Choice
@@ -99,12 +112,15 @@ namespace VendingMachine
     public class VendingMachine
     {
         private readonly int _maxQuantity = 25;
-
-        private readonly Dictionary<Choice, float> _priceDictionary = new Dictionary<Choice, float>()
+        public Dictionary<Choice, float> PriceDictionary { get; } 
+        public VendingMachine()
         {
-            { Choice.Cola, 2.5f },
-            { Choice.Fanta, 3.5f },
-        };
+            PriceDictionary = new Dictionary<Choice, float>()
+            {
+                { Choice.Cola, 2.5f },
+                { Choice.Fanta, 3.5f },
+            };
+        }
         private readonly List<Choice> _choices = new List<Choice>();
 
         public Can Deliver(Choice choice)
@@ -135,7 +151,7 @@ namespace VendingMachine
         {
             if (price > 0)
             {
-                _priceDictionary[choice] = price;
+                PriceDictionary[choice] = price;
                 return true;
             }
             return false;
