@@ -33,6 +33,28 @@ namespace VendingMachine
             var can = vendingMachine.Deliver(Choice.Fanta);
             Assert.AreEqual(Choice.Fanta, can.Type);
         }
+
+        [TestMethod]
+        public void ShouldAcceptStockOfProduct()
+        {
+            //Given
+            var vendingMachine = new VendingMachine();
+            //When
+            var accept = vendingMachine.AcceptStockOfProduct(Choice.Cola, 20);
+            //Then
+            Assert.AreEqual(true, accept);
+        }
+
+        [TestMethod]
+        public void ShouldNotAcceptStockOfProduct_WhenQuantityIsGreaterThenMaxQuantity()
+        {
+            //Given
+            var vendingMachine = new VendingMachine();
+            //When
+            var accept = vendingMachine.AcceptStockOfProduct(Choice.Cola, 30);
+            //Then
+            Assert.AreEqual(false, accept);
+        }
     }
 
     public enum Choice
@@ -43,6 +65,7 @@ namespace VendingMachine
 
     public class VendingMachine
     {
+        private readonly int _maxQuantity = 25;
         private readonly List<Choice> _choices = new List<Choice>();
 
         public Can Deliver(Choice choice)
@@ -57,6 +80,11 @@ namespace VendingMachine
         public void AddChoice(Choice choice)
         {
             _choices.Add(choice);
+        }
+
+        public bool AcceptStockOfProduct(Choice choice, int quantity)
+        {
+            return quantity <= _maxQuantity;
         }
     }
 
