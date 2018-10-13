@@ -55,6 +55,17 @@ namespace VendingMachine
             //Then
             Assert.AreEqual(false, accept);
         }
+
+        [TestMethod]
+        public void AcceptStockOfProduct_ShouldNotAcceptNegativeQuantity()
+        {
+            //Given
+            var vendingMachine = new VendingMachine();
+            //When
+            var accept = vendingMachine.AcceptStockOfProduct(Choice.Cola, -1);
+            //Then
+            Assert.AreEqual(false, accept);
+        }
     }
 
     public enum Choice
@@ -84,6 +95,10 @@ namespace VendingMachine
 
         public bool AcceptStockOfProduct(Choice choice, int quantity)
         {
+            if (quantity < 0)
+            {
+                return false;
+            }
             return quantity <= _maxQuantity;
         }
     }
