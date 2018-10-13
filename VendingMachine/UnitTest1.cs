@@ -12,13 +12,13 @@ namespace VendingMachine
         {
             var vendingMachine = new VendingMachine();
             var result = vendingMachine.Deliver(Choice.Cola);
-            Assert.AreEqual(null,result);
+            Assert.AreEqual(null, result);
         }
 
         [TestMethod]
         public void ShouldReturnACan()
         {
-            var vendingMachine=new VendingMachine();
+            var vendingMachine = new VendingMachine();
             vendingMachine.AddChoice(Choice.Cola);
             var can = vendingMachine.Deliver(Choice.Cola);
             Assert.IsNotNull(can);
@@ -27,11 +27,11 @@ namespace VendingMachine
         [TestMethod]
         public void ShouldReturnACanOfTheSelectedChoice()
         {
-            var vendingMachine=new VendingMachine();
+            var vendingMachine = new VendingMachine();
             vendingMachine.AddChoice(Choice.Fanta);
             vendingMachine.AddChoice(Choice.Cola);
             var can = vendingMachine.Deliver(Choice.Fanta);
-            Assert.AreEqual(Choice.Fanta,can.Type);
+            Assert.AreEqual(Choice.Fanta, can.Type);
         }
     }
 
@@ -43,7 +43,7 @@ namespace VendingMachine
 
     public class VendingMachine
     {
-        private List<Choice> _choices=new List<Choice>();
+        private readonly List<Choice> _choices = new List<Choice>();
 
         public Can Deliver(Choice choice)
         {
@@ -51,7 +51,7 @@ namespace VendingMachine
             {
                 return null;
             }
-            return new Can {Type = choice};
+            return new Can { Type = choice };
         }
 
         public void AddChoice(Choice choice)
