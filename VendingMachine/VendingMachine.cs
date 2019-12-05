@@ -7,9 +7,7 @@ namespace VendingMachine
 {
     public class VendingMachine
     {
-        private List<int> _choices = new List<int>();
-        private int[] _quantityKeys = {};
-        private int[] _quantityValues = {};
+        private Dictionary<int,int> _stock = new Dictionary<int,int>();
         private double total;
         private double _colaPrice;
         private Dictionary<int, double> _prices = new Dictionary<int, double>();
@@ -19,28 +17,28 @@ namespace VendingMachine
 
         public double T { get { return total; } }
 
-        public Can Deliver(int value)
+        public Can Deliver(int option)
         {
-            var price = _prices.ContainsKey(value) ? _prices[value] : 0;
-            if (!_choices.Contains(value) || _quantityValues[Array.IndexOf(_quantityKeys, value)] < 1 || total < price)
+            var price = _prices.ContainsKey(option) ? _prices[option] : 0;
+            if (!_stock.ContainsKey(option) || IsInStock(option) || total < price)
             {
                 return null;
             }
 
-            _quantityValues[Array.IndexOf(_quantityKeys, value)] = _quantityValues[Array.IndexOf(_quantityKeys, value)]-1;
+            _stock[option] = _stock[option] - 1;
             total -= price;
-            return new Can { Type = value };
+            return new Can { Type = option };
         }
 
         public void AddChoice(int choice, int count = int.MaxValue)
         {
-            AddToDictionary(choice, count);
+            _stock.Add(choice, count);
         }
         public void AddMultipleChoices(int[] choices, int[] counts)
         {
             for (int i = 0; i < choices.Length; i++)
             {
-                AddToDictionary(choices[i], counts[i]);
+                _stock.Add(choices[i], counts[i]);
             }
         }
 
@@ -61,9 +59,9 @@ namespace VendingMachine
             _prices[i] = v;
         }
 
-        public void Stock(int choice, int quantity, double price)
+        public void AddNewProduct(int choice, int quantity, double price)
         {
-            AddToDictionary(choice, quantity);
+            _stock.Add(choice, quantity);
             _prices[choice] = price;
         }
 
@@ -91,9 +89,9 @@ namespace VendingMachine
         public Can DeliverChoiceForCard()
         {
             var choice = ccc;
-            if (_valid && _choices.IndexOf(choice) > -1 && _quantityValues[Array.IndexOf(_quantityKeys, choice)] > 0)
+            if (_valid && _stock[choice] > 0)
             {
-                _quantityValues[Array.IndexOf(_quantityKeys, choice)] = _quantityValues[Array.IndexOf(_quantityKeys, choice)]-1;
+                _stock[choice] = _stock[choice]-1;
                 return new Can {Type = choice};
             }
             else
@@ -101,13 +99,10 @@ namespace VendingMachine
                 return null;
             }
         }
-        private void AddToDictionary(int choice, int count)
+       
+        private bool IsInStock(int option)
         {
-            Array.Resize(ref _quantityKeys, _quantityKeys.Length + 1);
-            Array.Resize(ref _quantityValues, _quantityValues.Length + 1);
-            _quantityKeys[_quantityKeys.Length - 1] = choice;
-            _quantityValues[_quantityValues.Length - 1] = count;
-            _choices.Add(choice);
+            return _stock[option] < 1;
         }
 
     }
